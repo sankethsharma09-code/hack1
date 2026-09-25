@@ -1,18 +1,19 @@
 import { useState } from 'react';
 import { Search, Loader2 } from 'lucide-react';
 import AnalysisResultCard from '../components/AnalysisResultCard';
-import { mockHistory } from '../mockData';
 
 export default function Analyzer() {
   const [text, setText] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleAnalyze = async () => {
     if (!text.trim()) return;
-    
+
     setIsAnalyzing(true);
     setResult(null);
+    setError(null);
 
     try {
       const token = localStorage.getItem('token');
@@ -21,22 +22,43 @@ export default function Analyzer() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({ message: text }),
       });
 
-      if (!response.ok) {
-        throw new Error('Analysis failed');
+      // Safely parse the response — .json() throws on empty/non-JSON bodies
+      const rawText = await response.text();
+      let data = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        // Server returned something non-JSON (e.g. HTML error page or empty body)
+        throw new Error(
+          response.ok
+            ? 'AI service returned an unexpected response. Please try again.'
+            : `Server error (${response.status}). Please try again.`
+        );
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || `Analysis failed (${response.status}). Please try again.`);
+      }
+
       setResult(data);
     } catch (err) {
       console.error(err);
-      alert('Error analyzing message. Please try again.');
+      setError(err.message || 'An unexpected error occurred.');
+
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    // Ctrl+Enter or Cmd+Enter to submit
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      handleAnalyze();
     }
   };
 
@@ -47,8 +69,8 @@ export default function Analyzer() {
           Analyze a Message
         </h1>
         <p className="text-slate-400 max-w-xl mx-auto text-lg">
-          Paste any suspicious text message, email, or social media DM below. 
-          Our AI will check it for common phishing and scam tactics.
+          Paste any suspicious text message, email, or social media DM below.
+          Our AI will check it for phishing, spoofing, and scam tactics in real time.
         </p>
       </div>
 
@@ -57,13 +79,21 @@ export default function Analyzer() {
           Message Content
         </label>
         <textarea
-          rows={5}
-          className="w-full p-5 bg-slate-950/50 border border-white/10 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 text-white placeholder:text-slate-600 resize-none mb-6 shadow-inner"
+          rows={6}
+          className="w-full p-5 bg-slate-950/50 border border-white/10 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 text-white placeholder:text-slate-600 resize-none mb-2 shadow-inner"
           placeholder="Paste a suspicious message here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
-        ></textarea>
-        
+          onKeyDown={handleKeyDown}
+        />
+        <p className="text-xs text-slate-600 mb-5">Tip: Press Ctrl+Enter to analyze quickly</p>
+
+        {error && (
+          <div className="mb-4 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm rounded-xl">
+            {error}
+          </div>
+        )}
+
         <div className="flex justify-end">
           <button
             onClick={handleAnalyze}
@@ -91,7 +121,7 @@ export default function Analyzer() {
           </div>
           <h3 className="text-xl font-semibold text-slate-200 mb-2">Waiting for input</h3>
           <p className="text-slate-400 text-sm max-w-sm mx-auto">
-            Paste a message above and click analyze to see the safety breakdown.
+            Paste a message above and click Analyze to see the full safety breakdown.
           </p>
         </div>
       )}

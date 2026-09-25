@@ -9,6 +9,13 @@ import Dashboard from './pages/Dashboard';
 export const ThemeContext = createContext();
 export const AuthContext = createContext();
 
+function ProtectedRoute({ isLoggedIn, children }) {
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -27,10 +34,36 @@ function App() {
         <BrowserRouter>
           <div className="min-h-screen flex flex-col font-sans bg-gray-50 dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
             <Routes>
-              <Route path="/login" element={<><Navbar /><Login /></>} />
-              <Route path="/" element={<><Navbar /><Analyzer /></>} />
-              <Route path="/history" element={<><Navbar /><History /></>} />
-              <Route path="/dashboard" element={<><Navbar /><Dashboard /></>} />
+              <Route
+                path="/login"
+                element={
+                  isLoggedIn ? <Navigate to="/" replace /> : <><Navbar /><Login /></>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute isLoggedIn={isLoggedIn}>
+                    <><Navbar /><Analyzer /></>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute isLoggedIn={isLoggedIn}>
+                    <><Navbar /><History /></>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute isLoggedIn={isLoggedIn}>
+                    <><Navbar /><Dashboard /></>
+                  </ProtectedRoute>
+                }
+              />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>
@@ -41,4 +74,3 @@ function App() {
 }
 
 export default App;
-
