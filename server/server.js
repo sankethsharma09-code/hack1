@@ -41,6 +41,19 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// Root endpoint: redirect browsers to frontend, or return API status JSON
+app.get('/', (req, res) => {
+  if (req.accepts('html')) {
+    return res.redirect('http://localhost:5173');
+  }
+  res.json({
+    name: 'SentinelText API Server',
+    status: 'running',
+    healthCheck: '/api/health',
+    frontend: 'http://localhost:5173',
+  });
+});
+
 // ─── 404 handler ──────────────────────────────────────────────────────────────
 // Catches requests to routes that don't exist and returns JSON, not HTML.
 app.use((req, res) => {
