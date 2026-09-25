@@ -77,9 +77,10 @@ export default function Dashboard() {
         />
         <StatCard 
           title="Common Red Flag" 
-          value={stats.commonRedFlag} 
+          value={stats.commonRedFlag || 'None detected'} 
           subtitle="Frequent in risky texts"
           icon={Flag}
+          valueClassName="text-sm sm:text-base font-semibold text-white/95 leading-snug line-clamp-3"
         />
       </div>
 
