@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0',
+    host: '::',
     port: 5173,
     strictPort: true,
     historyApiFallback: true,   // serve index.html for all unknown routes (required for BrowserRouter)
