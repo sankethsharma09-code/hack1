@@ -69,16 +69,20 @@ router.post('/analyze', authMiddleware, async (req, res) => {
     // 1. Validate + trim input
     const { message } = analyzeSchema.parse(req.body);
 
-    // 2. Call Gemini with automatic retry (3 attempts, exponential backoff)
-    //    Retries on 503 (overload) and 429 (rate limit). Fails fast on 404/400.
-    const GEMINI_MODEL = 'gemini-2.5-flash';
-    const MAX_ATTEMPTS = 3;
+    // 2. Call Gemini with automatic fallback across available models
+    //    Tries models in priority order, cascading on transient 503/429/404 errors.
+    const GEMINI_MODELS = [
+      'gemini-3.1-flash-lite',
+      'gemini-3.5-flash-lite',
+      'gemini-3.6-flash',
+      'gemini-3.8-flash',
+    ];
     let geminiResponse;
     let lastAiErr;
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    for (const modelName of GEMINI_MODELS) {
       try {
         geminiResponse = await ai.models.generateContent({
-          model: GEMINI_MODEL,
+          model: modelName,
           contents: message,
           config: {
             systemInstruction: SYSTEM_INSTRUCTION,
@@ -86,14 +90,10 @@ router.post('/analyze', authMiddleware, async (req, res) => {
           },
         });
         lastAiErr = null;
-        break; // success — exit retry loop
+        break; // success — exit loop
       } catch (aiErr) {
         lastAiErr = aiErr;
-        const retryable = aiErr.status === 503 || aiErr.status === 429;
-        if (!retryable || attempt === MAX_ATTEMPTS) break; // give up
-        const delayMs = Math.pow(2, attempt - 1) * 1000; // 1s, 2s, 4s
-        console.warn(`[GEMINI RETRY] attempt ${attempt} failed (${aiErr.status}), retrying in ${delayMs}ms…`);
-        await new Promise(r => setTimeout(r, delayMs));
+        console.warn(`[GEMINI FALLBACK] ${modelName} failed (${aiErr.status || aiErr.message}), trying next model…`);
       }
     }
     if (lastAiErr) {
