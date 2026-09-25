@@ -65,31 +65,31 @@ export default function Analyzer() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
       <div className="mb-10 text-center">
-        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-violet-400 to-cyan-400">
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 dark:from-indigo-400 dark:via-violet-400 dark:to-cyan-400">
           Analyze a Message
         </h1>
-        <p className="text-slate-400 max-w-xl mx-auto text-lg">
+        <p className="text-slate-700 dark:text-slate-400 max-w-xl mx-auto text-lg font-medium">
           Paste any suspicious text message, email, or social media DM below.
           Our AI will check it for phishing, spoofing, and scam tactics in real time.
         </p>
       </div>
 
-      <div className="bg-white/5 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/10 p-6 sm:p-8 mb-8 transition-transform duration-300 hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)] hover:-translate-y-1">
-        <label className="block text-sm font-medium text-slate-300 mb-3">
+      <div className="bg-white dark:bg-white/5 backdrop-blur-xl rounded-3xl shadow-md dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-slate-200/80 dark:border-white/10 p-6 sm:p-8 mb-8 transition-transform duration-300 hover:shadow-xl dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)] hover:-translate-y-1">
+        <label className="block text-sm font-semibold text-slate-800 dark:text-slate-300 mb-3">
           Message Content
         </label>
         <textarea
           rows={6}
-          className="w-full p-5 bg-slate-950/50 border border-white/10 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 text-white placeholder:text-slate-600 resize-none mb-2 shadow-inner"
+          className="w-full p-5 bg-slate-50 dark:bg-slate-950/50 border border-slate-300 dark:border-white/10 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600 resize-none mb-2 shadow-inner"
           placeholder="Paste a suspicious message here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-        <p className="text-xs text-slate-600 mb-5">Tip: Press Ctrl+Enter to analyze quickly</p>
+        <p className="text-xs text-slate-600 dark:text-slate-500 mb-5 font-medium">Tip: Press Ctrl+Enter to analyze quickly</p>
 
         {error && (
-          <div className="mb-4 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm rounded-xl">
+          <div className="mb-4 p-4 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400 text-sm font-medium rounded-xl">
             {error}
           </div>
         )}
@@ -115,12 +115,12 @@ export default function Analyzer() {
           <AnalysisResultCard result={result} />
         </div>
       ) : !isAnalyzing && (
-        <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-dashed border-white/10 p-12 text-center transition-all duration-300">
-          <div className="mx-auto w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-5 border border-white/5 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-            <Search className="w-8 h-8 text-slate-500" />
+        <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md rounded-3xl border border-dashed border-slate-300 dark:border-white/10 p-12 text-center transition-all duration-300 shadow-sm">
+          <div className="mx-auto w-16 h-16 bg-slate-100 dark:bg-white/5 rounded-full flex items-center justify-center mb-5 border border-slate-200 dark:border-white/5 shadow-sm dark:shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+            <Search className="w-8 h-8 text-slate-600 dark:text-slate-500" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-200 mb-2">Waiting for input</h3>
-          <p className="text-slate-400 text-sm max-w-sm mx-auto">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-200 mb-2">Waiting for input</h3>
+          <p className="text-slate-600 dark:text-slate-400 text-sm max-w-sm mx-auto font-medium">
             Paste a message above and click Analyze to see the full safety breakdown.
           </p>
         </div>

@@ -32,7 +32,7 @@ function App() {
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       <ThemeContext.Provider value={{ isDarkMode, setIsDarkMode }}>
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col font-sans bg-gray-50 dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
+          <div className="min-h-screen flex flex-col font-sans bg-slate-100/70 dark:bg-black text-slate-900 dark:text-white transition-colors duration-300">
             <Routes>
               <Route
                 path="/login"

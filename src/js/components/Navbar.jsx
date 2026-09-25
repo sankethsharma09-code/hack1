@@ -11,25 +11,25 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const navLinkClass = (path) =>
-    `relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+    `relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
       isActive(path)
-        ? 'text-gray-900 bg-gray-100 dark:text-white dark:bg-white/10'
-        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'
+        ? 'text-slate-950 bg-slate-200/80 dark:text-white dark:bg-white/10 shadow-sm'
+        : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5'
     }`;
 
   return (
     <div className="sticky top-0 z-50 pt-4 px-4 sm:px-6 lg:px-8 w-full max-w-5xl mx-auto">
-      <nav className="bg-white/80 dark:bg-black/60 backdrop-blur-xl border border-gray-200 dark:border-white/10 rounded-full shadow-sm dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-colors duration-300">
+      <nav className="bg-white/90 dark:bg-black/60 backdrop-blur-xl border border-slate-200/90 dark:border-white/10 rounded-full shadow-sm dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] transition-colors duration-300">
         <div className="px-6">
           <div className="flex justify-between h-16 items-center">
             
             {/* Left: Logo */}
             <div className="flex items-center w-1/3">
               <Link to="/" className="flex items-center gap-3 group">
-                <div className="w-8 h-8 rounded-full bg-gray-900 dark:bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                <div className="w-8 h-8 rounded-full bg-slate-900 dark:bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
                   <ShieldCheck className="w-5 h-5 text-white dark:text-black" />
                 </div>
-                <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                <span className="text-xl font-bold text-slate-950 dark:text-white tracking-tight">
                   SentinelText
                 </span>
               </Link>
@@ -56,13 +56,13 @@ export default function Navbar() {
             <div className="flex items-center justify-end w-1/3 gap-3">
               <button
                 onClick={() => setIsDarkMode(!isDarkMode)}
-                className="p-2 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+                className="p-2 rounded-full text-slate-700 hover:text-slate-950 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                 aria-label="Toggle theme"
               >
                 {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
 
-              <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-1 hidden sm:block"></div>
+              <div className="h-6 w-px bg-slate-300 dark:bg-gray-700 mx-1 hidden sm:block"></div>
 
               {isLoggedIn ? (
                 <button
@@ -70,7 +70,7 @@ export default function Navbar() {
                     localStorage.removeItem('token');
                     setIsLoggedIn(false);
                   }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 dark:text-white dark:bg-white/10 dark:hover:bg-white/20 transition-all duration-300"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-slate-800 bg-slate-100 hover:bg-slate-200 dark:text-white dark:bg-white/10 dark:hover:bg-white/20 transition-all duration-300"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden sm:inline">Log out</span>
@@ -79,14 +79,14 @@ export default function Navbar() {
                 <div className="flex items-center gap-2">
                   <Link
                     to="/login"
-                    className="px-4 py-2 rounded-full text-sm font-medium text-gray-700 bg-transparent hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
+                    className="px-4 py-2 rounded-full text-sm font-semibold text-slate-800 bg-transparent hover:bg-slate-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
                   >
                     Log In
                   </Link>
                   <Link
                     to="/login"
                     state={{ isSignup: true }}
-                    className="px-4 py-2 rounded-full text-sm font-medium text-white bg-gray-900 hover:bg-black dark:text-black dark:bg-white dark:hover:bg-gray-200 transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-full text-sm font-semibold text-white bg-slate-900 hover:bg-black dark:text-black dark:bg-white dark:hover:bg-slate-200 transition-colors shadow-sm"
                   >
                     Sign Up
                   </Link>

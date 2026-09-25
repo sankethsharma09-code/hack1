@@ -57,9 +57,9 @@ export default function Dashboard() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
       <div className="flex items-center gap-3 mb-10">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center">
-          <LayoutDashboard className="w-6 h-6 text-indigo-400" />
+          <LayoutDashboard className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
         </div>
-        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">
+        <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300">
           Your Dashboard
         </h1>
       </div>
@@ -80,12 +80,12 @@ export default function Dashboard() {
           value={stats.commonRedFlag || 'None detected'} 
           subtitle="Frequent in risky texts"
           icon={Flag}
-          valueClassName="text-sm sm:text-base font-semibold text-white/95 leading-snug line-clamp-3"
+          valueClassName="text-sm sm:text-base font-semibold text-slate-900 dark:text-white/95 leading-snug line-clamp-3"
         />
       </div>
 
-      <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/10 hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)] transition-all duration-300">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-8">
+      <div className="bg-white dark:bg-white/10 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-sm dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-slate-200/80 dark:border-white/10 hover:shadow-md dark:hover:shadow-[0_16px_48px_rgba(0,0,0,0.3)] transition-all duration-300">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-8">
           Risk Trend (Last 7 Days)
         </h3>
         
@@ -96,16 +96,16 @@ export default function Dashboard() {
             return (
               <div key={index} className="flex flex-col items-center flex-1 group h-full justify-end">
                 <div className="relative w-full flex justify-center h-[200px] items-end pb-2">
-                  <div className="opacity-0 group-hover:opacity-100 absolute -top-10 bg-slate-800 border border-slate-700 text-white text-xs px-3 py-1.5 rounded-lg transition-opacity whitespace-nowrap z-10 shadow-xl">
+                  <div className="opacity-0 group-hover:opacity-100 absolute -top-10 bg-slate-900 border border-slate-700 text-white text-xs px-3 py-1.5 rounded-lg transition-opacity whitespace-nowrap z-10 shadow-xl">
                     {data.riskScore} risky msgs
                   </div>
                   <div 
-                    className="w-full max-w-[3rem] bg-gradient-to-t from-indigo-900/50 to-indigo-500/80 group-hover:to-cyan-400/80 rounded-t-lg transition-all duration-500 relative border-t border-x border-white/10 shadow-[0_0_15px_rgba(99,102,241,0.2)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+                    className="w-full max-w-[3rem] bg-gradient-to-t from-indigo-500/70 to-indigo-600/90 dark:from-indigo-900/50 dark:to-indigo-500/80 group-hover:to-cyan-500 dark:group-hover:to-cyan-400/80 rounded-t-lg transition-all duration-500 relative border-t border-x border-slate-200/50 dark:border-white/10 shadow-sm dark:shadow-[0_0_15px_rgba(99,102,241,0.2)]"
                     style={{ height: `${Math.max(heightPercent, 5)}%` }}
                   >
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-2 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                <span className="text-sm font-semibold text-slate-600 dark:text-slate-400 mt-2 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                   {data.day}
                 </span>
               </div>
