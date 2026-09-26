@@ -29,7 +29,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ─── Core middleware ───────────────────────────────────────────────────────────
-app.use(cors());
+// Allow all origins with full CORS headers — prevents preflight failures
+// that cause the browser to receive an empty response body.
+app.use(cors({
+  origin: true,           // reflect any request origin
+  credentials: true,      // allow cookies / Authorization headers
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.options('/{*path}', cors());  // handle all pre-flight OPTIONS requests
 app.use(express.json());
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -62,20 +70,26 @@ app.use((req, res) => {
 
 // ─── Global error handler ─────────────────────────────────────────────────────
 // Express identifies this as an error handler because it has 4 parameters.
-// Any next(err) call, or an error thrown inside a sync middleware, lands here.
-// Async route handlers that throw will also reach here if they use next(err)
-// — but all our async handlers have their own try/catch that catches first.
-// This acts as the final safety net for anything that slips through.
+// This is the final safety net for anything that slips through route handlers.
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
+  // body-parser sends malformed-JSON as a SyntaxError with type='entity.parse.failed'
+  // If not handled in the route, catch it here and always return valid JSON.
+  if (err.type === 'entity.parse.failed' || err instanceof SyntaxError) {
+    return res.status(400).json({ error: 'Invalid JSON in request body' });
+  }
   console.error('[UNHANDLED ERROR]', err);
   const status = err.status || err.statusCode || 500;
-  res.status(status).json({
+  // Guard: if headers already sent we can't send another response
+  if (res.headersSent) return next(err);
+  return res.status(status).json({
     error: err.message || 'An unexpected error occurred. Please try again.',
   });
 });
 
 // ─── Start server ─────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Bind to 0.0.0.0 (all interfaces) so the server is reachable on both
+// IPv4 (127.0.0.1) and IPv6 (::1), and from the local network.
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
 });

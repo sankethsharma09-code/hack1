@@ -95,8 +95,12 @@ router.post('/signup', async (req, res) => {
   } catch (err) {
     if (err instanceof z.ZodError) {
       // Return the first human-readable message instead of a raw array
-      const message = err.errors[0]?.message || 'Invalid input';
+      const message = err.errors?.[0]?.message || 'Invalid input';
       return res.status(400).json({ error: message });
+    }
+    // body-parser forwards malformed-JSON as a SyntaxError with expose:true
+    if (err.type === 'entity.parse.failed' || err instanceof SyntaxError) {
+      return res.status(400).json({ error: 'Invalid JSON in request body' });
     }
     console.error('Signup error:', err);
     return res.status(500).json({ error: 'Internal server error' });
@@ -139,8 +143,12 @@ router.post('/login', async (req, res) => {
     return res.json({ token, user: { id: user.id, email: user.email } });
   } catch (err) {
     if (err instanceof z.ZodError) {
-      const message = err.errors[0]?.message || 'Invalid input';
+      const message = err.errors?.[0]?.message || 'Invalid input';
       return res.status(400).json({ error: message });
+    }
+    // body-parser forwards malformed-JSON as a SyntaxError with expose:true
+    if (err.type === 'entity.parse.failed' || err instanceof SyntaxError) {
+      return res.status(400).json({ error: 'Invalid JSON in request body' });
     }
     console.error('Login error:', err);
     return res.status(500).json({ error: 'Internal server error' });

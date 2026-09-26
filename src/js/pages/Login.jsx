@@ -38,18 +38,35 @@ export default function Login() {
     }
 
     try {
-      const API_URL = import.meta.env.VITE_API_URL;
-      const endpoint = isLogin ? `${API_URL}/api/auth/login` : `${API_URL}/api/auth/signup`;
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      // Use VITE_API_URL if set; fall back to '' so the Vite proxy handles /api/*
+      const base = import.meta.env.VITE_API_URL || '';
+      const endpoint = isLogin ? `${base}/api/auth/login` : `${base}/api/auth/signup`;
+      let response;
+      try {
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+      } catch {
+        throw new Error('Cannot reach the server. Please check your connection.');
+      }
 
-      const data = await response.json();
+      // Safely parse — response.json() throws on empty / non-JSON bodies
+      const rawText = await response.text();
+      let data = {};
+      try {
+        data = rawText ? JSON.parse(rawText) : {};
+      } catch {
+        throw new Error('Server returned an unexpected response. Please try again.');
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Authentication failed');
+      }
+
+      if (!data.token) {
+        throw new Error('Login failed: no token received. Please try again.');
       }
 
       localStorage.setItem('token', data.token);
